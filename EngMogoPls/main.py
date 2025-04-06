@@ -1,62 +1,14 @@
 import streamlit as st
 from google import genai
 from google.genai import types
-
+from testmake import test_make
 st.set_page_config('English moigosa pls')
 
-system_instruction = '''
-너는 사용자가 영어 지문을 주면 유형에 맞게 한국 영어 모의고사 문제를 만드는 ai야.
-만약 사용자가 준 영어 지문이 문제를 만들기에 부적절하다고 생각하면 그 이유를 말해줘.
-입력된 질문에 맞는 문제를 만들어줘.
-한국어선지라고 하면 한국어로 선지를 만들고 영어선지라고 하면 영어로 선지를 만들어줘.
-선지는 5개고 한 선지마다 줄을 바꿔서 보여줘.
-지문은 영어로 주고 질문은 한국어로 써줘.
-답지는 맨 아래에 올려줘.
-밑줄의 의미를 물어보는 문제는 너가 지문에 밑줄을 쳐줘
-'''
+
 
 geminiModels = ["gemini-2.0-flash"]
 type_list = ['글의 목적', '필자의 주장','밑줄의 의미', '글의 요지', '글의 주제', '글의 제목', '어법', '낱말의 쓰임', '빈칸 추론', '흐름', '순서', '문장 삽입', '요약']
 
-def generate_exam(client:genai.Client, model, question, seunji_lang, engtext):
-    return client.models.generate_content(
-        model=model,
-        config=types.GenerateContentConfig(system_instruction=system_instruction),
-        contents=question + seunji_lang + engtext
-    ).text
-
-def test_make(engtext, type_list, client:genai.Client, model):
-    exams = ''
-    for test_type in type_list:
-        seunji_lang = '영어선지'
-        
-        if test_type == '글의 목적':
-            question = '다음 글의 목적으로 가장 적절한 것은?'
-            seunji_lang = '한국어선지'
-            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
-        
-        if test_type == '필자의 주장':
-            question = '다음 글에서 필자가 주장하는 바로 가장 적절한 것은?'
-            seunji_lang = '한국어선지'
-            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
-        
-        if test_type == '밑줄의 의미':
-            question = '밑줄 친 부분이 다음 글에서 의미하는 바로 가장 적절한 것은?'
-            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
-        
-        if test_type == '필자의 주장':
-            question = '다음 글의 요지로 가장 적절한 것은?'
-            seunji_lang = '한국어선지'
-            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
-        
-        st.write(exams)
-            
-
-            
-    
-
-    
-    
     
 def main():
     st.title('영어 모의고사 만들기!')
@@ -86,7 +38,7 @@ def main():
 
         if st.button(label="초기화"):
             st.session_state["chat"] = []
-            st.session_state["messages"] = [{"role": "system", "content": "You are a thoughtful assistant. Respond to all input in 25 words and answer in korean"}]
+            model = []
             st.session_state["check_reset"] = True
 
     engtext = st.chat_input('영어 지문을 입력해주세요.')
@@ -95,13 +47,7 @@ def main():
         if model in geminiModels:
             test_make(engtext, test_types, client, model)
 
-        
-        
-        
-    
 
-
-        
 
 if __name__ == '__main__':
     main()
