@@ -13,6 +13,7 @@ system_instruction = '''
 지문은 영어로 주고 질문은 한국어로 써줘.
 답지는 맨 아래에 올려줘.
 '''
+
 geminiModels = ["gemini-2.0-flash"]
 type_list = ['글의 목적', '필자의 주장','밑줄의 의미', '글의 요지', '글의 주제', '글의 제목', '어법', '낱말의 쓰임', '빈칸 추론', '흐름', '순서', '문장 삽입', '요약']
 
@@ -24,27 +25,30 @@ def generate_exam(client:genai.Client, model, question, seunji_lang, engtext):
     ).text
 
 def test_make(engtext, type_list, client:genai.Client, model):
+    exams = ''
     for test_type in type_list:
         seunji_lang = '영어선지'
         
         if test_type == '글의 목적':
             question = '다음 글의 목적으로 가장 적절한 것은?'
             seunji_lang = '한국어선지'
-            st.write(generate_exam(client, model, question, seunji_lang, engtext))
+            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
         
         if test_type == '필자의 주장':
             question = '다음 글에서 필자가 주장하는 바로 가장 적절한 것은?'
             seunji_lang = '한국어선지'
-            generate_exam(client, model, question, seunji_lang, engtext)
+            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
         
         if test_type == '밑줄의 의미':
             question = '밑줄 친 부분이 다음 글에서 의미하는 바로 가장 적절한 것은?'
-            generate_exam(client, model, question, seunji_lang, engtext)
+            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
         
         if test_type == '필자의 주장':
             question = '다음 글의 요지로 가장 적절한 것은?'
             seunji_lang = '한국어선지'
-            generate_exam(client, model, question, seunji_lang, engtext)
+            exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
+        
+        st.write(exams)
             
 
             
