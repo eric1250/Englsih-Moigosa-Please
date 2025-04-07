@@ -82,7 +82,7 @@ def test_make(engtext, type_list, client:genai.Client, model):
             exams += generate_exam(client, model, question, seunji_lang, engtext) +'\n'
             
         
-        write(exams)
+        st.write(exams)
 
 
 geminiModels = ["gemini-2.0-flash"]
