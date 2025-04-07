@@ -1,7 +1,6 @@
 import streamlit as st
 from google import genai
 from google.genai import types
-from testmake import test_make
 st.set_page_config('English moigosa pls')
 
 system_instruction = '''
